@@ -1,6 +1,7 @@
 import express from 'express';
 import dotenv from 'dotenv';
 import cors from 'cors';
+import cookieParser from 'cookie-parser';
 import connectDB from './config/db.js';
 import taskRoutes from './routes/taskRoutes.js';
 import authRoutes from './routes/authRoutes.js';
@@ -15,9 +16,13 @@ connectDB();
 const app = express();
 
 // Middleware
-app.use(cors());
+app.use(cors({
+  origin: 'http://localhost:3000', // Your frontend URL (when you build it)
+  credentials: true // Allow cookies
+}));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser()); // Parse cookies
 
 // Routes
 app.use('/api/auth', authRoutes);
@@ -26,7 +31,7 @@ app.use('/api/tasks', taskRoutes);
 // Home route
 app.get('/', (req, res) => {
   res.json({ 
-    message: 'Welcome to Task Master 2.0 API with Authentication!',
+    message: 'Welcome to Task Master 2.0 API with Refresh Tokens!',
     version: '2.0',
     endpoints: {
       auth: '/api/auth',
